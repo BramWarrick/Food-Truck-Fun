@@ -12,6 +12,8 @@ Base = declarative_base()
 
 # TODO
 # establish relationships between company tables (foreign keys)
+    # Within company tables
+    # Across company tables and language
 # create a correct engine (current line 18)
 
 # Connect to Database and create database session
@@ -72,7 +74,7 @@ class User(Base):
 
 
 class Company(Base):
-    """Company table - sqlAlchemy linked with SQLite3 back end"""
+    """Company table - minimal values: no address or localization"""
     __tablename__ = 'company'
 
     id = Column(Integer, primary_key=True)
@@ -97,7 +99,7 @@ class Company(Base):
             return cls.update(company, company_name, contact_name,
                               contact_email)
         else:
-            newCompany = cls(company_name=company_name,
+            newCompany = cls(company_name_base=company_name,
                              contact_name=contact_name,
                              contact_email=contact_email)
             session.add(newCompany)
@@ -108,7 +110,7 @@ class Company(Base):
 
     @classmethod
     def update(cls, company, company_name, contact_name, contact_email):
-        """Updates the company.
+        """Updates the company table
 
         Args:
             company_name: Value updated by function
@@ -118,7 +120,7 @@ class Company(Base):
         Returns:
             Company instance
         """
-        company.company_name = company_name
+        company.company_name_base = company_name
         company.contact_name = contact_name
         company.contact_email = contact_email
         session.add(company)
@@ -133,9 +135,9 @@ class Company(Base):
         pass
 
 
-class CompanyName(Base):
-
-    __tablename__ = 'company_localization'
+class CompanyNameLocal(Base):
+    """Company name - Human Readable, with localization"""
+    __tablename__ = 'company_local'
 
     company_id = Column(Integer, nullable=False)
     language_id = Column(String(2), nullable=False)
@@ -144,18 +146,20 @@ class CompanyName(Base):
 
 class CompanyAddress(Base):
     """Allows multiple addresses for a company (e.g. multiple shipping
-    destinations).
+    destinations). No localization needed.
     """
     __tablename__ = 'company_address'
 
     company_id = Column(Integer, primary_key=True)
     company_address_type_id = Column(String(1), nullable=False)
+    location_name = Column(String(40), nullable=True)
     address_1 = Column(String(50), nullable=False)
     address_2 = Column(String(50), nullable=False)
     city = Column(String(32), nullable=False)
     state = Column(String(12), nullable=False)
     postal = Column(String(8), nullable=False)
     country = Column(String(2), nullable=False)
+    note = Column(String(50), nullable=True)
 
 
 class CompanyAddressType(Base):
@@ -163,6 +167,14 @@ class CompanyAddressType(Base):
     __tablename__ = 'company_address_type'
 
     id = Column(String(1), primary_key=True)
+    name_base = Column(String(30))
+
+
+class CompanyAddressTypeLocal(Base):
+    """Company Address Type - Human Readable localization"""
+    __tablename__ = 'company_address_type_local'
+
+    company_address_type_id = Column(String(1))
     language = Column(String(2), nullable=False)
     type_name = Column(String(1), nullable=False)
     type_description = Column(String(50), nullable=False)
@@ -186,9 +198,17 @@ class CompanyRelationshipType(Base):
     __tablename__ = 'company_relationship_type'
 
     id = Column(Integer, primary_key=True)
+    name_base = Column(String(30), nullable=False)
+
+
+class CompanyRelationshipTypeLocal(Base):
+    """Holds values for type of relationships - marketing, operators, etc"""
+    __tablename__ = 'company_relationship_type_local'
+
+    id = Column(Integer, nullable=False)
     language_id = Column(String(2), nullable=False)
-    name = Column(String(1), nullable=False)
-    description = Column(String(50), nullable=False)
+    name_local = Column(String(30), nullable=False)
+    description_local = Column(String(50), nullable=False)
 
 
 class Language(Base):
@@ -205,6 +225,28 @@ class LanguageLocalization(Base):
 
     language_id_from = Column(String(2), nullable=False)
     language_id_to = Column(String(2), nullable=False)
-    language_name = Column(String(20), nullable=False)
+    language_translation = Column(String(20), nullable=False)
+
+
+class MenuItem(Base):
+    """Holds all menu items, complete with localization"""
+    ___tablename__ = 'menu_item'
+
+    id = Column(Integer, primaty_key=True)
+    name_base = Column(String(30), nullable=False)
+
+
+class MenuItemLocal(Base):
+    """Menu Items - Human Readable localization
+    Allows multilingual descriptions, which could be beneficial in various
+    markets.
+    """
+    __tablename__ = 'menu_item_local'
+
+    menu_item_id = Column(String(30), nullable=False)
+    language_id = Column(String(2), nullable=False)
+    name_localized = Column(String(30), nullable=False)
+    description = Column(String(150), nullable=False)
+
 
 Base.metadata.create_all(engine)
