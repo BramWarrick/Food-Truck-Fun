@@ -12,8 +12,8 @@ Base = declarative_base()
 
 # TODO
 # establish relationships between company tables (foreign keys)
-    # Within company tables
-    # Across company tables and language
+#   Within company tables
+#   Across company tables and language
 # create a correct engine (current line 18)
 
 # Connect to Database and create database session
@@ -135,13 +135,17 @@ class Company(Base):
         pass
 
 
-class CompanyNameLocal(Base):
-    """Company name - Human Readable, with localization"""
+class CompanyLocal(Base):
+    """Company text information - name, blurb and longer marketing information,
+    with localization.
+    """
     __tablename__ = 'company_local'
 
     company_id = Column(Integer, nullable=False)
     language_id = Column(String(2), nullable=False)
     company_name_localized = Column(String(80), nullable=False)
+    company_description_short = Column(String(40), nullable=True)
+    company_description_long = Column(String(300), nullable=True)
 
 
 class CompanyAddress(Base):
