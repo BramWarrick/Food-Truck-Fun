@@ -146,6 +146,7 @@ class CompanyLocal(Base):
     company_name_localized = Column(String(80), nullable=False)
     company_description_short = Column(String(40), nullable=True)
     company_description_long = Column(String(300), nullable=True)
+    img_path = Column(String(150), nullable=True)
 
 
 class CompanyAddress(Base):
@@ -182,6 +183,20 @@ class CompanyAddressTypeLocal(Base):
     language = Column(String(2), nullable=False)
     type_name = Column(String(1), nullable=False)
     type_description = Column(String(50), nullable=False)
+
+
+class CompanyDivision(Base):
+    """Division of a company for any reason, geographic, logistical, etc.
+    (Future-proofing) No localization needed.
+    """
+    __tablename__ = 'company_division'
+
+    id = Column(Integer, primary_key=True)
+    company_id = Column(Integer, nullable=False)
+    name = Column(String(40), nullable=False)
+    contact_name = Column(String(40), nullable=False)
+    contact_email = Column(String(40), nullable=False)
+    note = Column(String(50), nullable=True)
 
 
 class CompanyRelationship(Base):
