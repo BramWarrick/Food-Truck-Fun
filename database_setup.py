@@ -234,6 +234,7 @@ class MenuItem(Base):
 
     id = Column(Integer, primaty_key=True)
     name_base = Column(String(30), nullable=False)
+    img_path = Column(String(150), nullable=True)
 
 
 class MenuItemLocal(Base):
