@@ -76,7 +76,7 @@ class Company(Base):
     __tablename__ = 'company'
 
     id = Column(Integer, primary_key=True)
-    company_name = Column(String(120), nullable=False)
+    company_name_base = Column(String(80), nullable=False)
     contact_name = Column(String(40), nullable=False)
     contact_email = Column(String(40), nullable=False)
 
@@ -133,7 +133,13 @@ class Company(Base):
         pass
 
 
-engine = create_engine('sqlite:///item_catalog.db')
+class CompanyName(Base):
+
+    __tablename__ = 'company_localization'
+
+    company_id = Column(Integer, nullable=False)
+    language_id = Column(String(2), nullable=False)
+    company_name_localized = Column(String(80), nullable=False)
 
 
 class CompanyAddress(Base):
@@ -157,6 +163,7 @@ class CompanyAddressType(Base):
     __tablename__ = 'company_address_type'
 
     id = Column(String(1), primary_key=True)
+    language = Column(String(2), nullable=False)
     type_name = Column(String(1), nullable=False)
     type_description = Column(String(50), nullable=False)
 
@@ -175,11 +182,29 @@ class CompanyRelationship(Base):
 
 
 class CompanyRelationshipType(Base):
+    """Holds values for type of relationships - marketing, operators, etc"""
     __tablename__ = 'company_relationship_type'
 
-    id = Column(String(1), primary_key=True)
-    type_name = Column(String(1), nullable=False)
-    type_description = Column(String(50), nullable=False)
+    id = Column(Integer, primary_key=True)
+    language_id = Column(String(2), nullable=False)
+    name = Column(String(1), nullable=False)
+    description = Column(String(50), nullable=False)
 
+
+class Language(Base):
+    """Listing of languages available for localization"""
+    __tablename__ = 'language'
+
+    id = Column(String(2), primary_key=True)
+    name = Column(String(20), nullable=False)
+
+
+class LanguageLocalization(Base):
+    """Allows language choices to be displayed in preferred language"""
+    __tablename__ = 'language_localization'
+
+    language_id_from = Column(String(2), nullable=False)
+    language_id_to = Column(String(2), nullable=False)
+    language_name = Column(String(20), nullable=False)
 
 Base.metadata.create_all(engine)
