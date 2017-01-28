@@ -251,7 +251,7 @@ class MenuItem(Base):
     """Holds all menu items, complete with localization"""
     ___tablename__ = 'menu_item'
 
-    id = Column(Integer, primaty_key=True)
+    id = Column(Integer, primary_key=True)
     name_base = Column(String(30), nullable=False)
     img_path = Column(String(150), nullable=True)
 
@@ -268,5 +268,21 @@ class MenuItemLocal(Base):
     name_localized = Column(String(30), nullable=False)
     description = Column(String(150), nullable=False)
 
+
+class FoodTruck(Base):
+    __tablename__ = 'food_truck'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(40), nullable=False)
+    img_path = Column(String(150), nullable=True)
+    owner_id = Column(Integer, nullable=False)
+
+
+class FoodTruckCompanyRelationship(Base):
+    __tablename__ = 'food_truck_company_relationship'
+
+    food_truck_id = Column(Integer, nullable=False)
+    company_id = Column(Integer, nullable=False)
+    company_relationship_type_id = Column(Integer, nullable=False)
 
 Base.metadata.create_all(engine)
