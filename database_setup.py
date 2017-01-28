@@ -14,6 +14,9 @@ Base = declarative_base()
 # establish relationships between company tables (foreign keys)
 #   Within company tables
 #   Across company tables and language
+#   Between food truck and
+#       menu_item
+#       company
 # create a correct engine (current line 18)
 
 # Connect to Database and create database session
@@ -285,4 +288,11 @@ class FoodTruckCompanyRelationship(Base):
     company_id = Column(Integer, nullable=False)
     company_relationship_type_id = Column(Integer, nullable=False)
 
-Base.metadata.create_all(engine)
+
+class FoodTruckMenuItem(Base):
+    __tablename__ = 'food_truck_menu_item'
+
+    food_truck_id = Column(Integer, nullable=False)
+    menu_item_id = Column(Integer, nullable=False)
+
+# Base.metadata.create_all(engine)
