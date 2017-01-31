@@ -14,7 +14,7 @@ Base = declarative_base()
 # revise methods on company
 # create a correct engine (current line 18)
 # Add country table
-#  Country should have a few preferred languages? If so, 
+#  Country should have a few preferred languages? If so,
 #  that's still another table and lookup
 # Add postal code table
 # Add state table - consider rename of field
@@ -22,6 +22,9 @@ Base = declarative_base()
 #   Allow for postal code or area code? Any others?
 #   Create a region type or is that overkill?
 # TESTING
+# Consider splitting into base DB and dynamic - Research best practice
+#   Config (e.g. languages, countries) would go into base
+#   User updated information would go into dynamic
 
 # Connect to Database and create database session
 # engine = create_engine('sqlite:///food_truck_finder.db')
@@ -148,11 +151,11 @@ class CompanyLocal(Base):
     """
     __tablename__ = 'company_local'
 
-    company_id = Column(Integer, ForeignKey('company.id'))
+    company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
     language_id = Column(String(2), nullable=False)
     company_name_localized = Column(String(80), nullable=False)
-    company_description_short = Column(String(40), nullable=True)
-    company_description_long = Column(String(300), nullable=True)
+    company_description_short = Column(String(40))
+    company_description_long = Column(String(300))
     img_path = Column(String(150), nullable=True)
 
 
@@ -164,15 +167,16 @@ class CompanyAddress(Base):
 
     company_id = Column(Integer, ForeignKey('company.id'))
     company_address_type_id = Column(Integer,
-                                     ForeignKey('company_address_type.id'))
-    location_name = Column(String(40), nullable=True)
+                                     ForeignKey('company_address_type.id'),
+                                     nullable=False)
+    location_name = Column(String(40), nullable=False)
     address_1 = Column(String(50), nullable=False)
     address_2 = Column(String(50), nullable=False)
     city = Column(String(32), nullable=False)
     state = Column(String(12), nullable=False)
     postal = Column(String(8), nullable=False)
     country = Column(String(2), nullable=False)
-    note = Column(String(50), nullable=True)
+    note = Column(String(50))
 
 
 class CompanyAddressType(Base):
@@ -192,8 +196,9 @@ class CompanyAddressTypeLocal(Base):
     __tablename__ = 'company_address_type_local'
 
     company_address_type_id = Column(Integer,
-                                     ForeignKey('company_address_type.id'))
-    language_id = Column(Integer, ForeignKey('language.id'))
+                                     ForeignKey('company_address_type.id'),
+                                     nullable=False)
+    language_id = Column(Integer, ForeignKey('language.id'), nullable=False)
     type_name = Column(String(1), nullable=False)
     type_description = Column(String(50), nullable=False)
 
@@ -205,11 +210,11 @@ class CompanyDivision(Base):
     __tablename__ = 'company_division'
 
     id = Column(Integer, primary_key=True)
-    company_id = Column(Integer, ForeignKey('company.id'))
+    company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
     name = Column(String(40), nullable=False)
     contact_name = Column(String(40), nullable=False)
     contact_email = Column(String(40), nullable=False)
-    note = Column(String(50), nullable=True)
+    note = Column(String(50))
 
 
 class CompanyRelationship(Base):
@@ -220,8 +225,12 @@ class CompanyRelationship(Base):
     """
     __tablename__ = 'company_relationship'
 
-    company_id_from = Column(Integer, ForeignKey('company.id'))
-    company_id_to = Column(Integer, ForeignKey('company.id'))
+    company_id_from = Column(Integer,
+                             ForeignKey('company.id'),
+                             nullable=False)
+    company_id_to = Column(Integer,
+                           ForeignKey('company.id'),
+                           nullable=False)
     company_relationship_type_id = Column(Integer,
                             ForeignKey('company_relationship_type.id'))
 
@@ -239,7 +248,9 @@ class CompanyRelationshipTypeLocal(Base):
     __tablename__ = 'company_relationship_type_local'
 
     id = Column(Integer, nullable=False)
-    language_id = Column(Integer, ForeignKey('language.id'))
+    language_id = Column(Integer,
+                         ForeignKey('language.id'),
+                         nullable=False)
     name_local = Column(String(30), nullable=False)
     description_local = Column(String(50), nullable=False)
 
@@ -256,8 +267,12 @@ class LanguageLocalization(Base):
     """Allows language choices to be displayed in preferred language"""
     __tablename__ = 'language_localization'
 
-    language_id_from = Column(Integer, ForeignKey('language.id'))
-    language_id_to = Column(Integer, ForeignKey('language.id'))
+    language_id_from = Column(Integer,
+                              ForeignKey('language.id'),
+                              nullable=False)
+    language_id_to = Column(Integer,
+                            ForeignKey('language.id'),
+                            nullable=False)
     language_translation = Column(String(20), nullable=False)
 
 
@@ -277,8 +292,12 @@ class MenuItemLocal(Base):
     """
     __tablename__ = 'menu_item_local'
 
-    menu_item_id = Column(Integer, ForeignKey('menu_item.id'))
-    language_id = Column(Integer, ForeignKey('language.id'))
+    menu_item_id = Column(Integer,
+                          ForeignKey('menu_item.id'),
+                          nullable=False)
+    language_id = Column(Integer,
+                         ForeignKey('language.id'),
+                         nullable=False)
     name_localized = Column(String(30), nullable=False)
     description = Column(String(150), nullable=False)
 
@@ -288,18 +307,24 @@ class FoodTruck(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(40), nullable=False)
-    img_path = Column(String(150), nullable=True)
+    img_path = Column(String(150))
     owner_id = Column(Integer, nullable=False)
 
 
 class FoodTruckCompanyRelationship(Base):
     __tablename__ = 'food_truck_company_relationship'
 
-    food_truck_id = Column(Integer, nullable=False)
-    company_id = Column(Integer, ForeignKey('company.id'))
-    company_division_id = Column(Integer, ForeignKey('company_division.id'))
+    food_truck_id = Column(Integer,
+                           ForeignKey('food_truck.id'),
+                           nullable=False)
+    company_id = Column(Integer,
+                        ForeignKey('company.id'),
+                        nullable=False)
+    company_division_id = Column(Integer,
+                                 ForeignKey('company_division.id'))
     company_relationship_type_id = Column(Integer,
-                                          ForeignKey('company_relationship_type.id'))
+                                    ForeignKey('company_relationship_type.id'),
+                                    nullable=False)
 
 
 class FoodTruckMenuItem(Base):
