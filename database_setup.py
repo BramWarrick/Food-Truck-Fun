@@ -10,10 +10,17 @@ from flask import render_template
 
 Base = declarative_base()
 
+# General Note - this is a pet project with the intent to be fully
+# functional across the globe. This is a self imposed requirement because I
+# want the challenge.
+
+
 # TODO
 # create a correct engine (current line 18)
 # revise methods on company
 # Add company_division to company_address as optional?
+# Add menu_item's price should be on a per truck basis
+# menu_item_truck's price should allow multiple currencies
 # Food Truck table additions:
 #   Truck Group - freeform but only created by owner or operator
 #   Fare table with table to map between
