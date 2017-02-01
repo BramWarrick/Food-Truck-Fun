@@ -11,16 +11,29 @@ from flask import render_template
 Base = declarative_base()
 
 # TODO
-# revise methods on company
 # create a correct engine (current line 18)
-# Add country table
-#  Country should have a few preferred languages? If so,
-#  that's still another table and lookup
-# Add postal code table
-# Add state table - consider rename of field
-# Add food_truck range/region
-#   Allow for postal code or area code? Any others?
-#   Create a region type or is that overkill?
+# revise methods on company
+# Add company_division to company_address as optional?
+# Food Truck table additions:
+#   Add fare table with table to map between
+#   Add pricing table with table to map between
+#   Add user rating table with table to map between
+#   Add avg rating to food truck table? Less expensive to recalc with
+#        each review than each view.
+#   Add truck status (Active, Inactive, Canceled, Flagged for delete, pending)
+#   Add unique view count (is this worth it? Or is follower count enough?)
+#       Any one metric (even two - could be manipulated)
+#   Add follower count
+#   Food_truck range/region
+#       Allow for postal code and/or area code? Any others?
+#       Create a region type or is that overkill?
+# Possible tables to add (could grow while working on templates):
+#   Company User - with supporting roles/permissions tables
+#   Country table
+#       Country should have a few preferred languages? If so,
+#       that's still another table and lookup
+#   Postal code table - with table for distance between postal codes
+#   State table - consider rename of `state`
 # TESTING
 # Consider splitting into base DB and dynamic - Research best practice
 #   Config (e.g. languages, countries) would go into base
@@ -324,7 +337,7 @@ class FoodTruckCompanyRelationship(Base):
                                  ForeignKey('company_division.id'))
     company_relationship_type_id = Column(Integer,
                                     ForeignKey('company_relationship_type.id'),
-                                    nullable=False)
+                                    pnullable=False)
 
 
 class FoodTruckMenuItem(Base):
