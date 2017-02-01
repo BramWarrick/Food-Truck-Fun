@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class = "container-fluid">
+
+    <nav id="mySidenav" class="sidenav">
+      <div class="form-group row">
+        <div class="col-sm-9 col-sm-offset-1">
+          <input class="form-control" type="text" id="searchText" data-bind="textInput: searchTerm">
+        </div>
+        <div class="col-sm-1">
+          <button type="button" class="close" aria-label="Close" onclick='closeNav()'><span aria-hidden="true">&times;</span></button>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-4 col-sm-offset-1">
+          <button class="btn btn-primary"
+          data-bind="click: function() {
+                    userSearch();
+                  }">
+          Google Search</button>
+        </div>
+        <div class="col-sm-4 col-sm-offset-1">
+          <button class="btn btn-primary"
+          data-bind="click: function() {
+                    filterMarkersBySearch(markers);
+                  }">
+          Filter Category</button>
+        </div>
+      </div>
+      <!--Adapted from code found on Stack Overflow
+      http://stackoverflow.com/questions/18432577/stacked-tabs-in-bootstrap-3 -->
+      <div class="tabbable">
+        {# TODO: Alter to support varying languages #}
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#fare" data-toggle="tab">Fare</a></li>
+          <li><a href="#filter" data-toggle="tab">Filter</a></li>
+          <li><a href="#venue" data-toggle="tab">Time and Place</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="fare">
+            <form>
+              {% for fare in fares %}
+                <div class="row">
+                  <div class="col-md-12 checkbox">
+                    <label><input type="checkbox" value="">fare.name</label>
+                  </div>
+                </div>
+              {% endfor %}
+            </form>
+          </div>
+          <div class="tab-pane" id="filter">
+          <form>
+            {% for range in ranges %}
+              <div class="row">
+                <div class="col-md-12 radio">
+                  <label><input type="radio" name="optradio">range.val</label>
+                </div>
+              </div>
+            {% endfor %}
+          </form>
+          <form>
+            <div class="row">
+              <div class="col-md-12 radio-inline">
+                {# TODO: Make this more tasteful later #}
+                <label><input type="radio" name="optradio">2</label>
+                <label><input type="radio" name="optradio">3</label>
+                <label><input type="radio" name="optradio">4</label>
+                <label><input type="radio" name="optradio">5</label>
+              </div>
+            </div>
+          </form>
+          <div class="tab-pane" id="venue">
+            {# TODO: Bootstrap date selector #}
+            {# TODO: Time selection - trucks move during the day #}
+            {# TODO: Postal code/Area Code/whatever selects geography #}
+          </div>
+        </div>
+      </div>
+    </nav>
+    <span id="site-title" style="font-size:30px;cursor:pointer" onclick="toggleNav()">&#9776; Food Truck Finder</span>
+
+
+{% endblock %}
