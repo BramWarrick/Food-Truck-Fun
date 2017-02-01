@@ -15,15 +15,17 @@ Base = declarative_base()
 # revise methods on company
 # Add company_division to company_address as optional?
 # Food Truck table additions:
-#   Add fare table with table to map between
-#   Add pricing table with table to map between
-#   Add user rating table with table to map between
-#   Add avg rating to food truck table? Less expensive to recalc with
+#   Truck Group - freeform but only created by owner or operator
+#   Fare table with table to map between
+#   Price Range table with table to map between
+#   User rating table with table to map between
+#   Avg rating to food truck table? Less expensive to recalc with
 #        each review than each view.
-#   Add truck status (Active, Inactive, Canceled, Flagged for delete, pending)
-#   Add unique view count (is this worth it? Or is follower count enough?)
+#   Truck status (Active, Inactive, Canceled, Flagged for delete, pending)
+#   Unique view count (is this worth it? Or is follower count enough?)
 #       Any one metric (even two - could be manipulated)
-#   Add follower count
+#   Follower table
+#   Follower count on food_truck
 #   Food_truck range/region
 #       Allow for postal code and/or area code? Any others?
 #       Create a region type or is that overkill?
