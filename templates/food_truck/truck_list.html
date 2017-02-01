@@ -1,0 +1,31 @@
+{% extends "/food_truck/truck_base.html" %}
+
+{% block content %}
+{# TODO LATER: Consider making this infinite scrolling w/ AJAX type implementation #}
+  {%  for truck in trucks  %}
+    <div class="row">
+      <div class="col-md-2 col-md-offset-1">
+      	<img class="img-responsive title-logo" src="{{ truck.img_path }}" alt=truck.name>
+      </div>
+      <div class="col-md-9">
+	    <div class="row">
+	      <div class="col-md-6">
+	  	    <a href="\truck\{{ truck.truck_id }}">{{ truck.name }}</a>
+	      </div>
+	    </div>
+	    <div class="row">
+	      <div class="col-md-6">
+	        {# TODO: make this prettier to user #}
+	  	    <a href="\truck\{{ truck.truck_id }}">{{ truck.fare }}</a>
+	      </div>
+	    </div>
+	    <div class="row">
+	      <div class="col-md-6">
+	  	    <a href="\truck\{{ truck.truck_id }}">{{ truck.description }}</a>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+  {% endfor %}
+
+{% endblock %}
