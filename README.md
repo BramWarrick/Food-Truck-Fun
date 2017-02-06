@@ -16,8 +16,9 @@ Utilize docker containers to the full capacity
 
 Webserver: Nginx
 Back-end: Python/Django
-Possible use of SQLAlchemy - research ongoing.
 Database: PostGres 
+
+While code was originally written with the intent to use SQLAlchemy, based on research I plan to switch to Django's ORM since it should be more than adequate for the use case.
 
 Materialized views are intended for key, stable values lookups.  
 
