@@ -10,9 +10,14 @@ This project hopes to provide a framework that acknowledges this and accommodate
 
 ### Architecture
 
-This is partly detailed for my own benefit, but knowing that this may prove useful to demonstrate the full thought, I'm including the details below.  
+After much research, the overall plan is as follows:
 
-Some tables may be shifted into a different database because they are less dynamic.  
+Utilize docker containers to the full capacity
+
+Webserver: Nginx
+Back-end: Python/Django
+Possible use of SQLAlchemy - research ongoing.
+Database: PostGres 
 
 Materialized views are intended for key, stable values lookups.  
 
