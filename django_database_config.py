@@ -11,7 +11,6 @@ from decimal import Decimal
 # revise methods on company
 
 # Food Truck table additions:
-#   Localized tagline/blurb - related to truck_list.html
 #   Truck Group - freeform but only created by owner or operator
 #   User rating table with table to map between
 #   Avg rating to food truck table? Less expensive to recalc with
@@ -43,6 +42,7 @@ from decimal import Decimal
 # Food Truck table additions:
 #   Fare table with table to map between
 #   Price Range table with table to map between
+#   Localized tagline/blurb - related to truck_list.html
 
 # Canceled/Defered:
 # menu_item_truck's price should allow multiple currencies
@@ -267,7 +267,6 @@ class MenuItemLocal(models.Model):
 
 class FoodTruck(models.Model):
     name = models.CharField(max_length=40)
-    food_truck_marketing_line = models.CharField(max_length=200)
     img_path = models.CharField(max_length=150)
     owner_id = models.ForeignKey(Company,
                                  on_delete=models.CASCADE)
@@ -279,9 +278,31 @@ class FoodTruck(models.Model):
                                           decimal_places=2,
                                           blank=True,
                                           null=True)
+    review_score_average = models.DecimalField(max_digits=7,
+                                               decimal_places=2,
+                                               blank=True,
+                                               null=True)
+    review_score_median = models.DecimalField(max_digits=7,
+                                              decimal_places=2,
+                                              blank=True,
+                                              null=True)
 
     class Meta(models.Model.Meta):
         db_table = 'food_truck'
+
+
+class FoodTruckMarketingLocalized(models.Model):
+    """Contains various marketing messages, localized to language"""
+    language_id = models.ForeignKey(Language, on_delete=models.CASCADE)
+    marketing_line = models.CharField(max_length=200,
+                                      blank=True,
+                                      null=True)
+    marketing_story = models.CharField(max_length=1500,
+                                       blank=True,
+                                       null=True)
+
+    class Meta(models.Model.Meta):
+        db_table = 'food_truck_marketing_localized'
 
 
 class FoodTruckCompanyRelationship(models.Model):
@@ -317,3 +338,13 @@ class FoodTruckFare(models.Model):
     class Meta(models.Model.Meta):
         db_table = 'food_truck_fare'
 
+
+
+class UserFoodTruckReview(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    food_truck_id = models.ForeignKey(FoodTruck, on_delete=models.CASCADE)
+    review_score = models.DecimalField(max_digits=5, decimal_places=0)
+    review_text = models.CharField(max_length=300)
+
+    class Meta(models.Model.Meta):
+        db_table = 'user_food_truck_review'
