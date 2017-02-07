@@ -9,8 +9,6 @@ from decimal import Decimal
 # TODO
 # create a correct engine (current line 18)
 # revise methods on company
-# Add company_division to company_address as optional?
-# Add menu_item's price should be on a per truck basis
 # menu_item_truck's price should allow multiple currencies
 # Food Truck table additions:
 #   Localized tagline/blurb - related to truck_list.html
@@ -40,6 +38,10 @@ from decimal import Decimal
 #   Config (e.g. languages, countries) would go into base
 #   User updated information would go into dynamic
 
+
+# Changed:
+# Add company_division to company_address as optional?
+# Add menu_item's price should be on a per truck basis
 
 class Language(models.Model):
     """Listing of languages available for localization"""
@@ -109,6 +111,10 @@ class CompanyAddress(models.Model):
     company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
     company_address_type_id = models.ForeignKey(CompanyAddressType,
                                                 on_delete=models.CASCADE)
+    company_address_type_id = models.ForeignKey(CompanyDivision,
+                                                on_delete=models.CASCADE,
+                                                blank=True,
+                                                null=True)
     location_name = models.CharField(max_length=40)
     address_1 = models.CharField(max_length=50)
     address_2 = models.CharField(max_length=50)
