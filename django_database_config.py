@@ -13,7 +13,6 @@ from decimal import Decimal
 # Food Truck table additions:
 #   Localized tagline/blurb - related to truck_list.html
 #   Truck Group - freeform but only created by owner or operator
-#   Price Range table with table to map between
 #   User rating table with table to map between
 #   Avg rating to food truck table? Less expensive to recalc with
 #        each review than each view.
@@ -43,6 +42,7 @@ from decimal import Decimal
 # Add menu_item's price should be on a per truck basis
 # Food Truck table additions:
 #   Fare table with table to map between
+#   Price Range table with table to map between
 
 # Canceled/Defered:
 # menu_item_truck's price should allow multiple currencies
@@ -73,6 +73,23 @@ class Currency(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'currency'
+
+
+class Country(models.Model):
+    country_name_native = models.CharField(max_length=30)
+    country_abbreviated_2_char = models.CharField(max_length=2)
+    currency_id = models.ForeignKey(Currency, on_delete=models.CASCADE)
+
+    class Meta(models.Model.Meta):
+        db_table = 'country'
+
+
+class PriceRangeType(models.Model):
+    range_icon_path = models.CharField(max_length=150, blank=True, null=True)
+    currency_id = models.ForeignKey(Currency, on_delete=models.CASCADE)
+
+    class Meta(models.Model.Meta):
+        db_table = 'price_range_type'
 
 
 class Fare(models.Model):
@@ -249,11 +266,18 @@ class MenuItemLocal(models.Model):
 
 
 class FoodTruck(models.Model):
-    __tablename__ = 'food_truck'
     name = models.CharField(max_length=40)
     img_path = models.CharField(max_length=150)
     owner_id = models.ForeignKey(Company,
                                  on_delete=models.CASCADE)
+    currency_id = models.ForeignKey(Currency,
+                                    on_delete=models.CASCADE)
+    price_range_type_id = models.ForeignKey(PriceRangeType,
+                                            on_delete=models.CASCADE)
+    price_range_avg = models.DecimalField(max_digits=7,
+                                          decimal_places=2,
+                                          blank=True,
+                                          null=True)
 
     class Meta(models.Model.Meta):
         db_table = 'food_truck'
@@ -291,3 +315,4 @@ class FoodTruckFare(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'food_truck_fare'
+
