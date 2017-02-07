@@ -1,5 +1,4 @@
 from django.db import models
-from decimal import Decimal
 
 # General Note - this is a pet project with the intent to be fully
 # functional across the globe. This is a self imposed requirement because I
@@ -12,10 +11,9 @@ from decimal import Decimal
 
 # Food Truck table additions:
 #   Truck Group - freeform but only created by owner or operator
-#   User rating table with table to map between
 #   Avg rating to food truck table? Less expensive to recalc with
-#        each review than each view.
-#   Truck status (Active, Inactive, Canceled, Flagged for delete, pending)
+#        each review than each view. - Add method
+
 #   Unique view count (is this worth it? Or is follower count enough?)
 #       Any one metric (even two - could be manipulated)
 #   Follower table
@@ -43,6 +41,8 @@ from decimal import Decimal
 #   Fare table with table to map between
 #   Price Range table with table to map between
 #   Localized tagline/blurb - related to truck_list.html
+#   User rating table with table to map between
+#   Truck status (Active, Inactive, Canceled, Flagged for delete, pending)
 
 # Canceled/Defered:
 # menu_item_truck's price should allow multiple currencies
@@ -265,17 +265,33 @@ class MenuItemLocal(models.Model):
         db_table = 'menu_item_local'
 
 
+class FoodTruckStatus(models.Model):
+    name = models.CharField(max_length=20)
+
+    class Meta(models.Model.Meta):
+        db_table = 'food_truck_status'
+
+
+class FoodTruckStatusLocalized(models.Model):
+    language_id = models.ForeignKey(Language, on_delete=models.CASCADE)
+    name_localized = models.CharField(max_length=20)
+
+    class Meta(models.Model.Meta):
+        db_table = 'food_truck_status_localized'
+
+
 class FoodTruck(models.Model):
     name = models.CharField(max_length=40)
-    img_path = models.CharField(max_length=150)
+    food_truck_status_id = models.ForeignKey(FoodTruckStatus,
+                                             on_delete=models.CASCADE)
     owner_id = models.ForeignKey(Company,
                                  on_delete=models.CASCADE)
     currency_id = models.ForeignKey(Currency,
                                     on_delete=models.CASCADE)
     price_range_type_id = models.ForeignKey(PriceRangeType,
                                             on_delete=models.CASCADE)
-    price_range_avg = models.DecimalField(max_digits=7,
-                                          decimal_places=2,
+    price_range_val = models.DecimalField(max_digits=4,
+                                          decimal_places=0,
                                           blank=True,
                                           null=True)
     review_score_average = models.DecimalField(max_digits=7,
@@ -286,6 +302,7 @@ class FoodTruck(models.Model):
                                               decimal_places=2,
                                               blank=True,
                                               null=True)
+    img_path = models.CharField(max_length=150)
 
     class Meta(models.Model.Meta):
         db_table = 'food_truck'
@@ -337,7 +354,6 @@ class FoodTruckFare(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'food_truck_fare'
-
 
 
 class UserFoodTruckReview(models.Model):
