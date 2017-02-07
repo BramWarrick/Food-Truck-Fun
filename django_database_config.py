@@ -267,6 +267,7 @@ class MenuItemLocal(models.Model):
 
 class FoodTruck(models.Model):
     name = models.CharField(max_length=40)
+    food_truck_marketing_line = models.CharField(max_length=200)
     img_path = models.CharField(max_length=150)
     owner_id = models.ForeignKey(Company,
                                  on_delete=models.CASCADE)
