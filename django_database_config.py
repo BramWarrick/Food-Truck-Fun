@@ -9,11 +9,10 @@ from decimal import Decimal
 # TODO
 # create a correct engine (current line 18)
 # revise methods on company
-# menu_item_truck's price should allow multiple currencies
+
 # Food Truck table additions:
 #   Localized tagline/blurb - related to truck_list.html
 #   Truck Group - freeform but only created by owner or operator
-#   Fare table with table to map between
 #   Price Range table with table to map between
 #   User rating table with table to map between
 #   Avg rating to food truck table? Less expensive to recalc with
@@ -42,6 +41,11 @@ from decimal import Decimal
 # Changed:
 # Add company_division to company_address as optional?
 # Add menu_item's price should be on a per truck basis
+# Food Truck table additions:
+#   Fare table with table to map between
+
+# Canceled/Defered:
+# menu_item_truck's price should allow multiple currencies
 
 class Language(models.Model):
     """Listing of languages available for localization"""
@@ -69,6 +73,21 @@ class Currency(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'currency'
+
+
+class Fare(models.Model):
+    fare_name = models.CharField(max_length=20)
+
+    class Meta(models.Model.Meta):
+        db_table = 'fare'
+
+
+class FareLocalized(models.Model):
+    language_id = models.ForeignKey(Language, on_delete=models.CASCADE)
+    fare_id = models.ForeignKey(Fare, on_delete=models.CASCADE)
+
+    class Meta(models.Model.Meta):
+        db_table = 'fare_localized'
 
 
 class User(models.Model):
@@ -264,3 +283,11 @@ class FoodTruckMenuItem(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'food_truck_menu_item'
+
+
+class FoodTruckFare(models.Model):
+    fare_id = models.ForeignKey(FoodTruck, on_delete=models.CASCADE)
+    food_truck_id = models.ForeignKey(Fare, on_delete=models.CASCADE)
+
+    class Meta(models.Model.Meta):
+        db_table = 'food_truck_fare'
