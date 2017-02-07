@@ -13,11 +13,8 @@ from django.db import models
 #   Truck Group - freeform but only created by owner or operator
 #   Avg rating to food truck table? Less expensive to recalc with
 #        each review than each view. - Add method
-
 #   Unique view count (is this worth it? Or is follower count enough?)
 #       Any one metric (even two - could be manipulated)
-#   Follower table
-#   Follower count on food_truck
 #   Food_truck range/region
 #       Allow for postal code and/or area code? Any others?
 #       Create a region type or is that overkill?
@@ -43,6 +40,8 @@ from django.db import models
 #   Localized tagline/blurb - related to truck_list.html
 #   User rating table with table to map between
 #   Truck status (Active, Inactive, Canceled, Flagged for delete, pending)
+#   Follower table
+#   Follower count on food_truck
 
 # Canceled/Defered:
 # menu_item_truck's price should allow multiple currencies
@@ -82,6 +81,14 @@ class Country(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'country'
+
+
+class PostalCode(models.Model):
+    country_id = models.ForeignKey(Country, on_delete=models.CASCADE)
+    postal_value = models.CharField(max_length=10)
+
+    class Meta(models.Model.Meta):
+        db_table = 'postal_code'
 
 
 class PriceRangeType(models.Model):
@@ -140,30 +147,6 @@ class CompanyLocal(models.Model):
         db_table = 'company_local'
 
 
-class CompanyAddress(models.Model):
-    """Allows multiple addresses for a company (e.g. multiple shipping
-    destinations). No localization needed.
-    """
-    company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
-    company_address_type_id = models.ForeignKey(CompanyAddressType,
-                                                on_delete=models.CASCADE)
-    company_address_type_id = models.ForeignKey(CompanyDivision,
-                                                on_delete=models.CASCADE,
-                                                blank=True,
-                                                null=True)
-    location_name = models.CharField(max_length=40)
-    address_1 = models.CharField(max_length=50)
-    address_2 = models.CharField(max_length=50)
-    city = models.CharField(max_length=40)
-    state = models.CharField(max_length=20)
-    postal = models.CharField(max_length=8)
-    country = models.CharField(max_length=2)
-    note = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta(models.Model.Meta):
-        db_table = 'company'
-
-
 class CompanyAddressType(models.Model):
     """Table of various address types like billing, shipping, hq
 
@@ -204,6 +187,38 @@ class CompanyDivision(models.Model):
         db_table = 'company_division'
 
 
+class CompanyAddress(models.Model):
+    """Allows multiple addresses for a company (e.g. multiple shipping
+    destinations). No localization needed.
+    """
+    company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company_division_id = models.ForeignKey(CompanyDivision,
+                                            on_delete=models.CASCADE)
+    company_address_type_id = models.ForeignKey(CompanyDivision,
+                                                on_delete=models.CASCADE,
+                                                blank=True,
+                                                null=True)
+    location_name = models.CharField(max_length=40)
+    address_1 = models.CharField(max_length=50)
+    address_2 = models.CharField(max_length=50)
+    city = models.CharField(max_length=40)
+    state = models.CharField(max_length=20)
+    postal = models.CharField(max_length=8)
+    country = models.CharField(max_length=2)
+    note = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta(models.Model.Meta):
+        db_table = 'company_address'
+
+
+class CompanyRelationshipType(models.Model):
+    """Holds values for type of relationships - marketing, operators, etc"""
+    name_base = models.CharField(max_length=30)
+
+    class Meta(models.Model.Meta):
+        db_table = 'company_relationship_type'
+
+
 class CompanyRelationship(models.Model):
     """Tracks a company's relationship with other companies allowing
     owners, operators, marketing, and future proofs further concepts.
@@ -217,14 +232,6 @@ class CompanyRelationship(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'company_relationship'
-
-
-class CompanyRelationshipType(models.Model):
-    """Holds values for type of relationships - marketing, operators, etc"""
-    name_base = models.CharField(max_length=30)
-
-    class Meta(models.Model.Meta):
-        db_table = 'company_relationship_type'
 
 
 class CompanyRelationshipTypeLocal(models.Model):
@@ -303,6 +310,7 @@ class FoodTruck(models.Model):
                                               blank=True,
                                               null=True)
     img_path = models.CharField(max_length=150)
+    subscriber_count = models.IntegerField()
 
     class Meta(models.Model.Meta):
         db_table = 'food_truck'
@@ -364,3 +372,28 @@ class UserFoodTruckReview(models.Model):
 
     class Meta(models.Model.Meta):
         db_table = 'user_food_truck_review'
+
+
+class UserFoodTruckSubscriber(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    food_truck_id = models.ForeignKey(FoodTruck, on_delete=models.CASCADE)
+
+    class Meta(models.Model.Meta):
+        db_table = 'user_food_truck_subscriber'
+
+
+class UserFoodTruckSubscriberDay(models.Model):
+    user_food_type_subscriber_id = models.ForeignKey(UserFoodTruckSubscriber,
+                                                     on_delete=models.CASCADE)
+    days_of_week = models.CharField(max_length=15)
+
+    class Meta(models.Model.Meta):
+        db_table = 'user_food_truck_subscriber_day'
+
+
+class UserFoodTruckSubscriberDayPostal(models.Model):
+    user_food_truck_subscriber_day_id = models.ForeignKey(UserFoodTruckSubscriberDay)
+    postal_code = models.ForeignKey(PostalCode, on_delete=models.CASCADE)
+
+    class Meta(models.Model.Meta):
+        db_table = 'user_food_truck_subscriber_day_postal'
