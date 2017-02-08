@@ -11,40 +11,43 @@ from django.db import models
 
 # Food Truck table additions:
 #   Truck Group - freeform but only created by owner or operator
-#   Avg rating to food truck table? Less expensive to recalc with
-#        each review than each view. - Add method
-#   Unique view count (is this worth it? Or is follower count enough?)
-#       Any one metric (even two - could be manipulated)
+#   Add method for Avg rating to food truck table. Less expensive to recalc
+#        with each review than each view.
 #   Food_truck range/region
 #       Allow for postal code and/or area code? Any others?
 #       Create a region type or is that overkill?
 # Possible tables to add (could grow while working on templates):
 #   Company User - with supporting roles/permissions tables
+#   State table - consider rename of `state`
+# TESTING
+
+
+# Changed:
+# Added general tables:
 #   Country table
 #       Country should have a few preferred languages? If so,
 #       that's still another table and lookup
 #   Postal code table - with table for distance between postal codes
-#   State table - consider rename of `state`
-# TESTING
-# Consider splitting into base DB and dynamic - Research best practice
-#   Config (e.g. languages, countries) would go into base
-#   User updated information would go into dynamic
-
-
-# Changed:
 # Add company_division to company_address as optional?
 # Add menu_item's price should be on a per truck basis
 # Food Truck table additions:
 #   Fare table with table to map between
 #   Price Range table with table to map between
-#   Localized tagline/blurb - related to truck_list.html
+#   Localized tag-line/blurb - related to truck_list.html
 #   User rating table with table to map between
 #   Truck status (Active, Inactive, Canceled, Flagged for delete, pending)
 #   Follower table
 #   Follower count on food_truck
 
-# Canceled/Defered:
+# Canceled/Deferred:
 # menu_item_truck's price should allow multiple currencies
+# Consider splitting into base DB and dynamic - Research best practice
+#   Config (e.g. languages, countries) would go into base
+#   User updated information would go into dynamic
+
+# Definitely Later:
+#   Unique pageview count for food trucks(is this worth it? Or is follower count enough?)
+#       Any one metric (even two - could be manipulated)
 
 class Language(models.Model):
     """Listing of languages available for localization"""

@@ -44,7 +44,7 @@
               {% for fare in fares %}
                 <div class="row">
                   <div class="col-md-12 checkbox">
-                    <label><input type="checkbox" value="">fare.name</label>
+                    <label><input type="checkbox" value="">{{ fare.name }}</label>
                   </div>
                 </div>
               {% endfor %}
@@ -55,7 +55,7 @@
             {% for range in ranges %}
               <div class="row">
                 <div class="col-md-12 radio">
-                  <label><input type="radio" name="optradio">range.val</label>
+                  <label><input type="radio" name="optradio">{{ range.val }}</label>
                 </div>
               </div>
             {% endfor %}
@@ -64,7 +64,7 @@
             <div class="row">
               <div class="col-md-12 radio-inline">
                 {# TODO: Make this more tasteful later #}
-                <label><input type="radio" name="optradio">2</label>
+                <label><input type="radio" name="optradio">2</label>=[-0p.]
                 <label><input type="radio" name="optradio">3</label>
                 <label><input type="radio" name="optradio">4</label>
                 <label><input type="radio" name="optradio">5</label>
@@ -80,6 +80,5 @@
       </div>
     </nav>
     <span id="site-title" style="font-size:30px;cursor:pointer" onclick="toggleNav()">&#9776; Food Truck Finder</span>
-
 
 {% endblock %}
